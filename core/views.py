@@ -486,7 +486,7 @@ class ForgetPassword(APIView):
         user = CustomUser.objects.filter(email=email).first()
         if user:
             otp = genereat_otp(6)
-            response = send_otp(email,user.first_name,otp)
+            response = send_otp(email,user.first_name,otp,4)
             if response:
                 OTP.objects.filter(email=email).delete()
                 OTP.objects.create(email=email,name=user.first_name,otp=otp).save()
