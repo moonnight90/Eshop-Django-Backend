@@ -24,11 +24,11 @@ import cloudinary
 SECRET_KEY = 'django-insecure-qw-p2cc4_)i+vco6%irml@ou918iz&!0d1sd&s%a#r$=41)wcz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 # Environment Variables
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, True)
+    DEBUG=(bool, False)
 )
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -66,6 +66,10 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+    
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',  # Enforce JSON output
+    )
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -113,24 +117,15 @@ WSGI_APPLICATION = 'eshop.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'defaultdb',                      
-#         'USER': 'avnadmin',
-#         'PASSWORD': 'AVNS_0QiLZX3FqK1RwcHlSmd',
-#         'HOST': 'pg-34736c68-ahmadraza1907r-4b06.c.aivencloud.com',
-#         'PORT': '27845',
-#     }
-# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',                      
-        'USER': 'postgres',
-        'PASSWORD': 'jsZczCBLycmnnOLPcvNcBiufjiunVdxs',
-        'HOST': 'monorail.proxy.rlwy.net',
-        'PORT': '51149',
+        'NAME': env("DB_NAME"),                      
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
  

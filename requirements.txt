@@ -21,3 +21,4 @@ django-environ
 sib_api_v3_sdk
 cloudinary
 psycopg2-binary
+gunicorn>=23.0.0
