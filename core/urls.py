@@ -24,7 +24,4 @@ urlpatterns = [
     ## Admin Panel
     path('upload/products/',view=ProductUploadView.as_view()),
     path('upload/image/',view=ImageUploadView.as_view()),
-
-    
-    path('upload/',view=Uploading) # Uploading Data
 ]
