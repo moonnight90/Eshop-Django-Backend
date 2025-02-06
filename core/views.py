@@ -5,7 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .serializers import ProductSerializer,CartItemSerializer,UserLoginSerializer,AddressBookSerializer,UserSerializer,ReviewSerializer,UserRegistrationSerializer,OrderItemSerializer,OrderSerializer,OTPSerializer,CategorySerializer,PasswordUpdateSerializer, WishListSerializer,SearchAutoCompleteSerializer,ImageSerializer
+from .serializers import ProductSerializer,CartItemSerializer,UserLoginSerializer,AddressBookSerializer,UserSerializer,ReviewSerializer,UserRegistrationSerializer,OrderItemSerializer,OrderSerializer,OTPSerializer,CategorySerializer,PasswordUpdateSerializer, WishListSerializer,SearchAutoCompleteSerializer,ImageSerializer,CategoryUploadSerializer,ProductUploadSerializer
 from rest_framework import generics
 from rest_framework import status
 from .models import Products,Image,CartItem,Cart, AddressBook,Reviews,Order,Order_Item,Category,OTP,User_Verification_Token, WishList
@@ -97,7 +97,7 @@ class ProductsView(generics.ListAPIView):
 class ProductUploadView(APIView):
     # parser_classes = [MultiPartParser, FormParser]
     def post(self, request):
-        serializer = ProductSerializer(data=request.data)
+        serializer = ProductUploadSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -459,6 +459,14 @@ class CategoryView(APIView):
         objs = Category.objects.all()
         serializer = CategorySerializer(objs,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
+    
+    def post(self,request):
+        serializer = CategoryUploadSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class logout(APIView):
     authentication_classes = [TokenAuthentication]

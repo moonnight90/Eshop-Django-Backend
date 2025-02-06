@@ -24,12 +24,14 @@ import cloudinary
 SECRET_KEY = 'django-insecure-qw-p2cc4_)i+vco6%irml@ou918iz&!0d1sd&s%a#r$=41)wcz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+
 # Environment Variables
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
+
+DEBUG = env('DEBUG')
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 BREVO_API_KEY = env("BREVO_API_KEY")
@@ -163,7 +165,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 

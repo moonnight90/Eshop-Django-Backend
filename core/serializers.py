@@ -10,6 +10,11 @@ class ImageSerializer(serializers.ModelSerializer):
         model = Image
         fields = '__all__'
 
+class CategoryUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
 class CategorySerializer(serializers.ModelSerializer):
     parents = serializers.SerializerMethodField()
     products_count = serializers.SerializerMethodField()
@@ -42,6 +47,11 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Products
         # fields = "__all__"
         exclude = ['created_at', 'updated_at']
+
+class ProductUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields = '__all__'
 
 class SearchAutoCompleteSerializer(serializers.ModelSerializer):
     class Meta:
