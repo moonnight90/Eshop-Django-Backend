@@ -20,6 +20,9 @@ urlpatterns = [
     path('reset_password/',view=ForgetPassword.as_view()),
     path('reset_password_confirm/',view=ResetPassword.as_view()),
     path('autocomplete/',view=SearchAutoComplete.as_view()),
+    path('payments/create-checkout-session/',view=StripeCheckoutSessionView.as_view()),
+    path('payments/session-status/',view=StripeSessionStatusView.as_view()),
+    path('payments/webhook/',view=StripeWebhookView.as_view()),
 
     ## Admin Panel
     path('upload/products/',view=ProductUploadView.as_view()),

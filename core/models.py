@@ -56,12 +56,21 @@ class AddressBook(models.Model):
     def __str__(self) -> str:
         return self.address
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user"],
+                condition=models.Q(default_address=True),
+                name="uniq_default_addr_user",
+            )
+        ]
+
 
 class Products(models.Model):
     
     title = models.CharField(max_length=250)
     description = models.TextField(null=True)
-    price = models.FloatField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     rating = models.FloatField(default=0)
     review_count = models.IntegerField(default=0)
     stock = models.IntegerField(default=0)
@@ -74,6 +83,14 @@ class Products(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self) -> str:
         return self.title
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["title"], name="product_title_idx"),
+            models.Index(fields=["category", "price"], name="product_category_price_idx"),
+            models.Index(fields=["created_at"], name="product_created_idx"),
+            models.Index(fields=["rating"], name="product_rating_idx"),
+        ]
     
 
 class Image(models.Model):
@@ -87,6 +104,14 @@ class WishList(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     product = models.ForeignKey(Products,on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "product"],
+                name="unique_wishlist_user_product",
+            )
+        ]
 
 class Cart(models.Model):
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
@@ -103,6 +128,14 @@ class CartItem(models.Model):
 
     def total_price(self):
         return self.quantity*self.product.price
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["cart", "product"],
+                name="unique_cart_product",
+            )
+        ]
 
 
 class Category(models.Model):
@@ -130,12 +163,20 @@ class Order(models.Model):
     status = models.CharField(max_length=255,choices=[('Pending','Pending'),('Shipped','Shipped'),('Delivered','Delivered'),('Cancelled','Cancelled')],default='Pending')
     payment = models.CharField(max_length=255,choices=[('COD','COD'),('Online','Online')],default='COD')
     is_paid = models.BooleanField(default=False)
-    total = models.FloatField(default=0)
+    stripe_checkout_session_id = models.CharField(max_length=255, null=True, blank=True, unique=True)
+    stripe_payment_intent_id = models.CharField(max_length=255, null=True, blank=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return f"{self.user.email} - {self.address.fullName}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["user", "created_at"], name="order_user_created_idx"),
+            models.Index(fields=["status"], name="order_status_idx"),
+        ]
 
 class Order_Item(models.Model):
     product = models.ForeignKey(Products,on_delete=models.CASCADE)
@@ -170,4 +211,3 @@ def create_cart(sender,instance=None, created=False, **kwargs):
 def create_token(sender,instance=None,created=False, **kwargas):
     if created:
         Token.objects.create(user=instance)
-

@@ -2,7 +2,7 @@ asgiref>=3.8.1
 brotli>=1.1.0
 certifi>=2024.6.2
 charset-normalizer>=3.3.2
-django>=5.0.6
+django>=5.0.6,<6.0
 django-cors-headers>=4.4.0
 django-phonenumber-field>=8.0.0
 djangorestframework>=3.15.2
@@ -22,3 +22,4 @@ sib_api_v3_sdk
 cloudinary
 psycopg2-binary
 gunicorn>=23.0.0
+stripe

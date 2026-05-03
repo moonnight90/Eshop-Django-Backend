@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import environ,os
+import environ, os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 import cloudinary
@@ -20,28 +20,29 @@ import cloudinary
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qw-p2cc4_)i+vco6%irml@ou918iz&!0d1sd&s%a#r$=41)wcz'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-
 # Environment Variables
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
 
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env('DEBUG')
 
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-BREVO_API_KEY = env("BREVO_API_KEY")
-BREVO_SENDER_EMAIL = env("BREVO_SENDER_EMAIL")
-BREVO_SENDER_NAME = env("BREVO_SENDER_NAME")
-BREVO_API = env("BREVO_API")
-BREVO_TEMPLATE_ID = env("BREVO_TEMPLATE_ID")
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env("SECRET_KEY", default="django-insecure-change-me")
+
+BREVO_API_KEY = env("BREVO_API_KEY", default="")
+BREVO_SENDER_EMAIL = env("BREVO_SENDER_EMAIL", default="")
+BREVO_SENDER_NAME = env("BREVO_SENDER_NAME", default="")
+BREVO_API = env("BREVO_API", default="")
+BREVO_TEMPLATE_ID = env("BREVO_TEMPLATE_ID", default="")
+FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:5173")
+STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY", default="")
+STRIPE_WEBHOOK_SECRET = env("STRIPE_WEBHOOK_SECRET", default="")
 
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
 
 AUTH_USER_MODEL = 'core.CustomUser'
@@ -71,14 +72,15 @@ REST_FRAMEWORK = {
     
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',  # Enforce JSON output
-    )
+    ),
+    'COERCE_DECIMAL_TO_STRING': False,
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS", default=False)
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -178,7 +180,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 cloudinary.config(
-    cloud_name = env("CLOUDINARY_CLOUD_NAME"), 
-    api_key = env("CLOUDINARY_API_KEY"), 
-    api_secret = env("CLOUDINARY_API_SECRET"),
+    cloud_name = env("CLOUDINARY_CLOUD_NAME", default=""),
+    api_key = env("CLOUDINARY_API_KEY", default=""),
+    api_secret = env("CLOUDINARY_API_SECRET", default=""),
 )

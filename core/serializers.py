@@ -74,7 +74,7 @@ class WishListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishList
         fields = ['product',"product_id","id","user"]
-        # exclude=['user']
+        extra_kwargs = {'user': {'read_only': True}}
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -143,7 +143,7 @@ class OrderSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = Order
-        fields = ['id','address',"address_id","status","total","created_at",'order_items','payment']
+        fields = ['id','address',"address_id","status","total","created_at",'order_items','payment','is_paid']
         # exclude = ['updated_at','user']
     
     def get_address(self,obj):
